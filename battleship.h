@@ -84,8 +84,13 @@ void print_grid(struct rules rules,
  * Retourne la somme des `n` premiers éléments du tableau d'entier `array`.
  * Le tableau est supposé contenir au moins `n` éléments
  */
-int sum(int n, const int array[]) ;
-
+int sum(int n, const int array[]) 
+{
+  int b = 0;
+  for(int a = 0; a < n; ++a)
+    b = b + array[a];
+  return b;
+}
 /**
  * Retourne vrai (1) si la position `pos` appartient au rectangle dont
  * le coin supérieur gauche est `origin` de dimension `dim`. Cette fonction
@@ -96,8 +101,10 @@ int sum(int n, const int array[]) ;
  * - Faux: pos={4, 3}, origin={1, 0}, dim={3, 3}
  */
 int inside(struct position pos,
-        struct position origin, struct dimension dim) ;
-
+        struct position origin, struct dimension dim) 
+{
+  return ((pos.x >= origin.x) * (pos.y >= origin.y) * ((dim.width + origin.x) > pos.x) * ((dim.height + origin.y) > pos.y)); // Fait un ET logique entre la position en X et Y
+}
 /**
  * Contraint la position `pos` aux dimensions `dim`.
  * Si la position y appartient déjà elle est inchangée, sinon elle prendra
@@ -106,8 +113,13 @@ int inside(struct position pos,
  * Exemple:
  * - pos={7,3}, dim={4,4} -> pos devient {3,3}
  */
-void constrain(struct position *pos, struct dimension dim) ;
-
+void constrain(struct position *pos, struct dimension dim)
+{
+  if (pos->x  >= dim.width)
+    pos->x = dim.width - 1;
+  if (pos->y >= dim.height)
+    pos->y = dim.height - 1;    
+}
 /**
  * Étant donné une position `origin` désignant le coin supérieur
  * gauche du bateau, et une position `pos` désignant une case du
@@ -121,16 +133,23 @@ void constrain(struct position *pos, struct dimension dim) ;
  * - pos={2,3}, origin={0,3} => 2
  * - pos={0,4}, origin={0,3} => 1
  */
-int offset(struct position pos, struct position origin) ;
-
+int offset(struct position pos, struct position origin) 
+{
+  int a = abs(pos.x + pos.y - origin.x - origin.y);
+  return a;
+}
 /**
  * Retourne la taille du bateau `ship` (en nombre de cases) en fonction d'une
  * règle du jeu.
  *
  * EX (Avec des règles par défaut): CARRIER => 5
  */
-int ship_size(struct rules rules, struct ship ship) ;
-
+int ship_size(struct rules rules, struct ship ship) 
+  {
+int a = ship.kind;
+int b = rules.ships_size[a];
+return b;
+  }
 /**
  * Retourne une dimension représentant la taille du bateau `ship` et son
  * orientation.
@@ -151,7 +170,14 @@ int remaining_life(struct rules rules, struct ship ship) ;
  * ou Y (ordonnée) est une lettre entre `A` et `Z`
  * et X (abscisse) est un chiffre entre `0` et `9`
  */
-void print_position(struct position pos) ;
+void print_position(struct position pos) 
+{
+int n = pos.x;
+int m = pos.y;
+pos.x = m + 'A';
+pos.y = n + '0';
+printf("%C%C", pos.x , pos.y);
+}
 
 /**
  * Affiche le bateau `ship` sous la forme:
