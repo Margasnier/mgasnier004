@@ -78,58 +78,13 @@ struct ship {
  *
  */
 void print_grid(struct rules rules,
-        int fleet_size, const struct ship fleet[], struct dimension board)
-{
-int b = (board.width) * (board.height);
-char tab[b];  // creation d'un tableau de vagues (~)
-for (int i = 0; i < b; i++)
-{
-  tab[i] = '~';
-}
-for (int n = 0; n < board.width ; ++n){
-    for (int m = 0; m < board.height; ++m){
-      for(int a = 0; a < fleet_size; ++a){
-        struct ship ship = fleet[a];
-        if ((ship.position.x == m) && (ship.position.y == n)){
-          int d = ship_size(rules, ship);
-          if (ship.orientation == 1){   // verif de l'orientation du bateau pour l'afficher
-            for (int i = 0; i < d; i++)
-            {
-             if (ship.state[i] == 1)  // controle de l'état du bateau touché ou non
-             {
-             tab[n+ i +m*10] = 'X';}
-             else
-             {
-             tab[n+ i +m*10] = '#';}
-            }}
-          else{
-            for (int i = 0; i < d; i++)
-            {
-            if (ship.state[i] == 1)  // controle de l'état du bateau touché ou non
-             {
-             tab[n+(m+i)*10] = 'X';}
-             else
-             {
-             tab[n+(m+i)*10] = '#';}
-            }
-          }        
-           }
-      }
-      printf("%c ",tab[n + m*10]);}   // affichage d'une partie du tableau qui correspond à 1 ligne.
-printf("\n");
-}
-}
+        int fleet_size, const struct ship fleet[], struct dimension board);
+
 /**
  * Retourne la somme des `n` premiers éléments du tableau d'entier `array`.
  * Le tableau est supposé contenir au moins `n` éléments
  */
-int sum(int n, const int array[])
-{
-  int b = 0;
-  for(int a = 0; a < n; ++a)
-    b = b + array[a];
-  return b;
-}
+int sum(int n, const int array[]);
 
 /**
  * Retourne vrai (1) si la position `pos` appartient au rectangle dont
@@ -140,10 +95,7 @@ int sum(int n, const int array[])
  * - Vrai: pos={1, 2}, origin={0, 0}, dim={3, 3}
  * - Faux: pos={4, 3}, origin={1, 0}, dim={3, 3}
  */
-int inside(struct position pos, struct position origin, struct dimension dim)
-{
-  return ((pos.x >= origin.x) * (pos.y >= origin.y) * ((dim.width + origin.x) > pos.x) * ((dim.height + origin.y) > pos.y)); // Fait un ET logique entre la position en X et Y
-}
+int inside(struct position pos, struct position origin, struct dimension dim);
 
 /**
  * Contraint la position `pos` aux dimensions `dim`.
@@ -153,13 +105,7 @@ int inside(struct position pos, struct position origin, struct dimension dim)
  * Exemple:
  * - pos={7,3}, dim={4,4} -> pos devient {3,3}
  */
-void constrain(struct position *pos, struct dimension dim)
-{
-  if (pos->x  >= dim.width)
-    pos->x = dim.width - 1;
-  if (pos->y >= dim.height)
-    pos->y = dim.height - 1;    
-}
+void constrain(struct position *pos, struct dimension dim);
 
 /**
  * Étant donné une position `origin` désignant le coin supérieur
@@ -174,10 +120,7 @@ void constrain(struct position *pos, struct dimension dim)
  * - pos={2,3}, origin={0,3} => 2
  * - pos={0,4}, origin={0,3} => 1
  */
-int offset(struct position pos, struct position origin){
-  int a = abs(pos.x + pos.y - origin.x - origin.y);
-  return a;
-}
+int offset(struct position pos, struct position origin);
 
 /**
  * Retourne la taille du bateau `ship` (en nombre de cases) en fonction d'une
@@ -185,12 +128,7 @@ int offset(struct position pos, struct position origin){
  *
  * EX (Avec des règles par défaut): CARRIER => 5
  */
-int ship_size(struct rules rules, struct ship ship)
-  {
-int a = ship.kind;
-int b = rules.ships_size[a];
-return b;
-  }
+int ship_size(struct rules rules, struct ship ship);
 
 /**
  * Retourne une dimension représentant la taille du bateau `ship` et son
@@ -199,39 +137,20 @@ return b;
  * RQ: Tous les bateaux ne font qu'une case de large
  * EX (Avec des règles par défaut): CARRIER VERTICAL => {1, 5}
  */
-struct dimension ship_dimension(struct rules rules, struct ship ship) { 
-struct dimension local;
-local.width = ship.orientation;
-local.height = ship_size(rules, ship);
-return local;
-};
+struct dimension ship_dimension(struct rules rules, struct ship ship) ;
 
 /**
  * Retourne le nombre de points de vie restant au bateau `ship`.
  * Si ce nombre est 0, on dit que le bateau est coulé.
  */
-int remaining_life(struct rules rules, struct ship ship) 
-{
-int a = rules.ships_size[ship.kind];
-for(int i = 0; i == a; --i){
-a = a - ship.state[i];
-}
-return a;
-}
+int remaining_life(struct rules rules, struct ship ship) ;
 
 /**
  * Affiche la position `pos` sous la forme YX
  * ou Y (ordonnée) est une lettre entre `A` et `Z`
  * et X (abscisse) est un chiffre entre `0` et `9`
  */
-void print_position(struct position pos) 
-{
-int n = pos.x;
-int m = pos.y;
-pos.x = m + 'A';
-pos.y = n + '0';
-printf("%C%C", pos.x , pos.y);
-}
+void print_position(struct position pos) ;
 
 /**
  * Affiche le bateau `ship` sous la forme:
@@ -261,11 +180,8 @@ void print_ship(struct rules rules, struct ship ship) ;
  *     "3A" == "3a" == {3, 0}
  *     "1B3A" == "b13A" == {3, 0}
  */
-struct position parse_position(const char *str)
-{
+struct position parse_position(const char *str) ;
 
-
-}
 /**
  * Retourne un pointeur sur le bateau (appartenant à la flotte `fleet` de
  * `fleet_size` bateaux) recouvrant la position `pos`, et NULL sinon.
@@ -321,40 +237,3 @@ int ships_remaining(struct rules rules, int fleet_size,
  */
 int ship_overlap(struct rules rules, struct ship ship,
         int fleet_size, const struct ship fleet[]) ;
-/**
- * Le nom des bateaux sous forme de chaînes de caractères immutables.
- * Les entrées du tableau coïncident avec les valeurs de l'`enum ship_kind`
- */
-static const char* const ship_labels[] = {
-    "Destroyer", "Submarine", "Cruiser", "Battleship", "Carrier"
-};
-
-/**
- * Les règles par défaut de la bataille navale.
- *
- * RQ : Ce ne sont pas les seules règles utilisées dans les tests.
- * RQ2: Ces règles sont statiques, i.e., si vous les changez, ceci ne changera
- *      pas celles utilisés par les tests.
- */
-static struct rules basic_rules = {
-    { 2, 2, 1, 1, 1 },
-    { 2, 1, 3, 4, 5 },
-};
-  
-int main(int argc, char *argv[])
-{
-  struct dimension grid_size = {10, 10};  // grille de 10 x 10 
-  int fleet_size = 3;   
-  struct ship fleet[] = {
-    {DESTROYER, {4, 7}, VERTICAL, {1, 1}},
-    {CARRIER, {1, 2}, HORIZONTAL, {0, 1, 0}},
-    {BATTLESHIP, {5, 6}, HORIZONTAL, {0}},
-  };
-    struct dimension dev;
-    dev = ship_dimension(basic_rules, fleet[0]);
-    printf("%d\n",remaining_life(basic_rules, fleet[1]));
-    printf("%d%d\n", dev.width, dev.height);
-    print_grid(basic_rules, fleet_size, fleet, grid_size);
-    return 0;
-}
-
