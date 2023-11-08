@@ -200,7 +200,11 @@ printf("%C %d%C\n", pos.x , a, pos.y);
  * RQ: Le comportement de cette fonction est indéfini si le bateau n'est pas
  *     valide (i.e., pas de piège)
  */
-void print_ship(struct rules rules, struct ship ship) ;
+void print_ship(struct rules rules, struct ship ship)
+{
+int a = rules[ship.kind];
+printf("%s (%d/%d) %s-%s \n", ship_labels[a])
+}
 
 /**
  * Construit une position à partir d'une chaîne contenant des chiffres (x)
