@@ -185,11 +185,21 @@ return a;
  */
 void print_position(struct position pos) 
 {
+pos.x = abs(pos.x);
+pos.y = abs(pos.y);
 int n = pos.x;
 int m = pos.y;
-pos.x = m + 'A';
-pos.y = n + '0';
-printf("%C%C", pos.x , pos.y);
+int a = 0;
+if (n  > 25){
+  n = pos.x % 26;
+  }
+if( m > 9){
+  a = pos.y/10 ;
+  m = pos.y % 10;
+}
+pos.x = n + 'A';
+pos.y = m + '0';
+printf("%C %d%C\n", pos.x , a, pos.y);
 }
 
 /**
