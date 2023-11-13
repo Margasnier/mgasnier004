@@ -107,7 +107,7 @@ void constrain(struct position *pos, struct dimension dim)
     pos->x = 0 ;
   if (pos->y >= dim.height)
     pos->y = dim.height - 1;
-   if (pos->y < 0)
+  if (pos->y < 0)
     pos->y = 0 ;
 
   /* switch (pos->x) */
@@ -199,7 +199,7 @@ if( m > 9){
 }
 pos.x = n + 'A';
 pos.y = m + '0';
-printf("%C %d%C\n", pos.x , a, pos.y);
+printf("%C%d%C", pos.x , a, pos.y);
 }
 
 /**
@@ -215,8 +215,18 @@ printf("%C %d%C\n", pos.x , a, pos.y);
  */
 void print_ship(struct rules rules, struct ship ship)
 {
-int a = rules[ship.kind];
-printf("%s (%d/%d) %s-%s \n", ship_labels[a])
+int a = rules.ships_size[ship.kind];
+int b = 0;
+int c = 0;
+printf("%s (%d/%d) ", ship_labels[a-1], remaining_life(rules, ship), rules.ships_size[ship.kind]); 
+print_position(ship.position);
+printf("-");
+if (ship.orientation == 1)
+  b = ship_size(rules, ship);
+  else
+    c = ship_size(rules, ship);
+struct position p2 = {ship.position.x + b , ship.position.y + c};
+print_position(p2);
 }
 
 /**
@@ -234,9 +244,22 @@ printf("%s (%d/%d) %s-%s \n", ship_labels[a])
  *     "3A" == "3a" == {3, 0}
  *     "1B3A" == "b13A" == {3, 0}
  */
-struct position parse_position(const char *str);
-
-
+struct position parse_position(const char *str)
+{
+struct position position;
+while(*str != 0) {
+  if  (*str >= 'A' && *str <= ('z'+ 1 )){
+    if (*str >= 'a' && *str <= 'z')
+      position.y = *str - 'a';
+    if (*str >= 'A' && *str <= 'Z')
+      position.y = *str - 'A';
+  }
+  if ( *str >= '0' && *str <= '9')
+      position.x = *str - '0' ; 
+  str = str + 1 ; 
+}
+return position;
+}
 
 /**
  * Retourne un pointeur sur le bateau (appartenant à la flotte `fleet` de
