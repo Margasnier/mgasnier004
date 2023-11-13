@@ -110,12 +110,7 @@ void constrain(struct position *pos, struct dimension dim)
   if (pos->y < 0)
     pos->y = 0 ;
 
-  /* switch (pos->x) */
-  /*   { */
-  /*   case   : pos->x = dim.width - 1 ; */
-  /*   /\* case (pos->x < 0) : pos->x = 0 */
-  /*   /\* case (pos->y >= dim.height) : pos->y = dim.height - 1 *\/ */
-  /*   /\* case (pos-> < 0) : pos->y = 0 *\/ */
+ 
        
     
 }
