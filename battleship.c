@@ -109,10 +109,6 @@ void constrain(struct position *pos, struct dimension dim)
     pos->y = dim.height - 1;
   if (pos->y < 0)
     pos->y = 0 ;
-
- 
-       
-    
 }
 
 /**
@@ -153,10 +149,17 @@ return b;
  * RQ: Tous les bateaux ne font qu'une case de large
  * EX (Avec des règles par défaut): CARRIER VERTICAL => {1, 5}
  */
-struct dimension ship_dimension(struct rules rules, struct ship ship) { 
+struct dimension ship_dimension(struct rules rules, struct ship ship) 
+{ 
 struct dimension local;
-local.width = ship.orientation;
-local.height = ship_size(rules, ship);
+if (ship.orientation == 1){
+  local.width = 1;
+  local.height = ship_size(rules, ship);
+  }
+  else {
+  local.width = ship_size(rules, ship);
+  local.height = 1;
+  }
 return local;
 };
 
@@ -166,11 +169,13 @@ return local;
  */
 int remaining_life(struct rules rules, struct ship ship) 
 {
-int a = rules.ships_size[ship.kind];
-for(int i = 0; i == a; --i){
-a = a - ship.state[i];
-}
-return a;
+/*int a = ship_size(rules, ship);
+int b = a;
+while(b != 0){
+b = b - 1;    
+a = a - ship.state[b];
+}*/
+return ship_size(rules,ship) - sum(ship_size(rules,ship),ship.state); 
 }
 
 /**
@@ -180,22 +185,19 @@ return a;
  */
 void print_position(struct position pos) 
 {
-pos.x = abs(pos.x);
-pos.y = abs(pos.y);
-int n = pos.x;
-int m = pos.y;
-int a = 0;
-if (n  > 25){
-  n = pos.x % 26;
+int n = abs(pos.x);
+int m = abs(pos.y);
+if (n  > 9){
+  n = pos.x % 10;
   }
-if( m > 9){
-  a = pos.y/10 ;
-  m = pos.y % 10;
+if( m > 26){
+  m = pos.y % 26;
 }
-pos.x = n + 'A';
-pos.y = m + '0';
-printf("%C%d%C", pos.x , a, pos.y);
+pos.x = n + '0';
+pos.y = m + 'A';
+printf("%C%C", pos.y , pos.x);
 }
+
 
 /**
  * Affiche le bateau `ship` sous la forme:
@@ -210,18 +212,18 @@ printf("%C%d%C", pos.x , a, pos.y);
  */
 void print_ship(struct rules rules, struct ship ship)
 {
-int a = rules.ships_size[ship.kind];
 int b = 0;
 int c = 0;
-printf("%s (%d/%d) ", ship_labels[a-1], remaining_life(rules, ship), rules.ships_size[ship.kind]); 
+printf("%s (%d/%d) ", ship_labels[ship.kind], remaining_life(rules, ship), rules.ships_size[ship.kind]); 
 print_position(ship.position);
 printf("-");
-if (ship.orientation == 1)
-  b = ship_size(rules, ship);
+if (ship.orientation == 0)
+  b = ship_size(rules, ship)- 1;
   else
-    c = ship_size(rules, ship);
+    c = ship_size(rules, ship) - 1;
 struct position p2 = {ship.position.x + b , ship.position.y + c};
 print_position(p2);
+printf("\n");
 }
 
 /**
@@ -261,7 +263,16 @@ return position;
  * `fleet_size` bateaux) recouvrant la position `pos`, et NULL sinon.
  */
 struct ship *find_target(struct rules rules, struct position pos,
-        int fleet_size, struct ship fleet[]) ;
+        int fleet_size, struct ship fleet[])
+{
+    while (fleet_size > 0){
+        if( inside(pos, fleet[fleet_size - 1].position, 
+                       ship_dimension(rules, fleet[fleet_size - 1])) == 1)
+        return &fleet[fleet_size - 1];
+        fleet_size = fleet_size - 1;}
+    return NULL;
+}
+   
 
 /**
  * Retourne l'état de la position `pos` en fonction de la flotte `fleet` (de
@@ -276,7 +287,20 @@ struct ship *find_target(struct rules rules, struct position pos,
  *     coulé ou non.
  */
 int hit(struct rules rules, struct position pos,
-        int fleet_size, struct ship fleet[]) ;
+        int fleet_size, struct ship fleet[])
+{ 
+   while (fleet_size > 0){
+        if( inside(pos, fleet[fleet_size - 1].position, 
+                        ship_dimension(rules, fleet[fleet_size - 1]))) {
+          if (fleet[fleet_size - 1].state[offset(pos,fleet[fleet_size - 1].position)]){
+            return 1;}
+          else 
+            return 0;
+        }
+        fleet_size = fleet_size - 1;
+    }   
+return -1;  
+}
 
 /**
  * Fait feu à la position `pos` sur la flotte `fleet` (de `fleet_size`
@@ -288,7 +312,10 @@ int hit(struct rules rules, struct position pos,
  *            X-1 (Exemple 1 => DESTROYER)
  */
 int fire(struct rules rules, struct position pos,
-        int fleet_size, struct ship fleet[]) ;
+        int fleet_size, struct ship fleet[]) 
+{
+
+}
 
 /**
  * Étant donné une flotte `fleet` (de `fleet_size` bateaux) et des
