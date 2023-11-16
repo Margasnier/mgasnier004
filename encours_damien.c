@@ -49,11 +49,14 @@ int main (int argc, char *argv[])
   
   int fleet_size = 1;
     
-  struct position pos = {1,1};
-
- 
+  struct position pos = {0,0};
   
   int result = fire(r, pos, fleet_size, fleet);
+  printf("fire ! %d\n", result);
+
+  pos = {1,0};
+  
+  result = fire(r, pos, fleet_size, fleet);
   printf("fire ! %d\n", result);
 
   return 0 ;
