@@ -5,7 +5,14 @@
 
 #include "battleship.h"
 
-/**
+/**struct ship *find_target(struct rules rules, struct position pos,
+        int fleet_size, struct ship fleet[])
+{
+ 
+  
+  return 0;
+}
+
  * Le nom des bateaux sous forme de chaînes de caractères immutables.
  * Les entrées du tableau coïncident avec les valeurs de l'`enum ship_kind`
  */
@@ -313,9 +320,8 @@ return -1;
  */
 int fire(struct rules rules, struct position pos,
         int fleet_size, struct ship fleet[]) 
-{
+  ;
 
-}
 
 /**
  * Étant donné une flotte `fleet` (de `fleet_size` bateaux) et des
