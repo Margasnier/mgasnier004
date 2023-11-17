@@ -312,10 +312,8 @@ return -1;
  *            X-1 (Exemple 1 => DESTROYER)
  */
 int fire(struct rules rules, struct position pos,
-        int fleet_size, struct ship fleet[]) 
-{
+        int fleet_size, struct ship fleet[]) ;
 
-}
 
 /**
  * Étant donné une flotte `fleet` (de `fleet_size` bateaux) et des
@@ -328,7 +326,27 @@ int fire(struct rules rules, struct position pos,
  * de bateaux d'au moins un type.
  */
 int ships_remaining(struct rules rules, int fleet_size,
-        const struct ship fleet[], int remains[]) ;
+        const struct ship fleet[], int remains[]) 
+{
+int b = 0;
+for (int i = 0; i < LAST_SHIP; ++i){  
+  remains[i] = rules.ships_count[i];
+   }
+for (int i = 0; i < fleet_size; ++i ){
+  remains[fleet[i].kind] -= 1;
+  if (remains[fleet[i].kind] < 0){
+    b = 1;
+    }
+}
+int a = sum(LAST_SHIP, remains);
+if(b)
+    return -1;
+if( a > 0)
+    return 1;
+else
+    return 0;
+}
+
 
 /**
  * Retourne l'indice du premier bateau de la flotte `fleet` (de `fleet_size`
@@ -337,7 +355,19 @@ int ships_remaining(struct rules rules, int fleet_size,
  * RQ: réutiliser autant que possible les fonctions précédentes.
  */
 int ship_overlap(struct rules rules, struct ship ship,
-        int fleet_size, const struct ship fleet[]) ;
+        int fleet_size, const struct ship fleet[])
+{
+for (int i = 0; i < fleet_size; i++){
+  for (int a = 0; a < ship_size(rules, ship); a++){
+    if (inside(ship.position, fleet[i].position, ship_dimension(rules, fleet[i])))
+    return i;
+    ship.position.x = ship.position.x + (1 && ship_dimension(rules, fleet[i]).height);
+    ship.position.y = ship.position.y + (1 && ship_dimension(rules, fleet[i]).width);
+  }
+}
+
+return -1;
+}
 
 /**
  * Les règles par défaut de la bataille navale.
