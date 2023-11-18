@@ -319,12 +319,24 @@ return -1;
  *            X-1 (Exemple 1 => DESTROYER)
  */
 int fire(struct rules rules, struct position pos,
-<<<<<<< HEAD
-        int fleet_size, struct ship fleet[]) ;
-=======
-        int fleet_size, struct ship fleet[]) 
-  ;
->>>>>>> 4746b88589e8e73fa32ed5fe2b09f16d0e9c3a08
+	 int fleet_size, struct ship fleet[])
+  {
+  struct ship *tgt = find_target(rules, pos, fleet_size, fleet);
+
+  if (tgt != NULL)
+    {
+    int n = offset(pos, tgt->position);
+    tgt->state[n] = 1;
+    if (remaining_life(rules, *tgt) == 0)
+      return tgt->kind + 1;
+    else
+      return 0;
+  }
+  else 
+    return -1;
+}
+ 
+
 
 
 /**
@@ -369,16 +381,27 @@ else
 int ship_overlap(struct rules rules, struct ship ship,
         int fleet_size, const struct ship fleet[])
 {
+int b = -1;
 for (int i = 0; i < fleet_size; i++){
-  for (int a = 0; a < ship_size(rules, ship); a++){
-    if (inside(ship.position, fleet[i].position, ship_dimension(rules, fleet[i])))
-    return i;
-    ship.position.x = ship.position.x + (1 && ship_dimension(rules, fleet[i]).height);
-    ship.position.y = ship.position.y + (1 && ship_dimension(rules, fleet[i]).width);
+  struct ship one = ship;
+  print_position(one.position);
+  for (int a = 0; a < ship_size(rules,ship); a++){
+    // for (int c = 
+    if (inside(one.position, fleet[i].position, ship_dimension(rules, fleet[i])) == 1){
+      return i;
+    }
+    /* printf("%d inside\n",inside(one.position, fleet[i].position, ship_dimension(rules, fleet[i])));
+    one.position.x = one.position.x + (1 < ship_dimension(rules, ship).width);
+    one.position.y = one.position.y + (1 < ship_dimension(rules, ship).height);
+    print_position(one.position);
+    printf(" one\n");
+    print_position(fleet[i].position);
+    printf(" fleet\n");
+    printf("%d b\n",b);
   }
+  printf("\n\n");*/
 }
-
-return -1;
+return b;
 }
 
 /**
