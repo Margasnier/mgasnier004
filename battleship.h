@@ -78,7 +78,7 @@ struct ship {
  *
  */
 void print_grid(struct rules rules,
-        int fleet_size, const struct ship fleet[], struct dimension board);
+		int fleet_size, const struct ship fleet[], struct dimension board,int tab3[]);
 
 /**
  * Retourne la somme des `n` premiers éléments du tableau d'entier `array`.
