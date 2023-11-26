@@ -30,47 +30,76 @@ static const char* const ship_labels[] = {
  *
  */
 void print_grid(struct rules rules,
-        int fleet_size, const struct ship fleet[], struct dimension board)
+		int fleet_size, const struct ship fleet[], struct dimension board)
 {
-int b = (board.width) * (board.height);
-char tab[b];  // creation d'un tableau de vagues (~)
-for (int i = 0; i < b; i++)
-{
-  tab[i] = '~';
-}
-for (int n = 0; n < board.width ; ++n){
+  int b = (board.width+1) * (board.height+1);
+  char tab[b];  // creation d'un tableau de vagues (~)
+  tab[0]=' ';
+  for (int i = 1; i < board.width+2; ++i)
+    tab[i]= '0' + i - 1;
+  for (int k = 1; k < board.height+2; ++k)
+    tab[k*(board.width+1)]='A'+ k -1;
+  for (int n = 0; n < board.width ; ++n){
     for (int m = 0; m < board.height; ++m){
       for(int a = 0; a < fleet_size; ++a){
-        struct ship ship = fleet[a];
+	struct position pos = {n,m};
+		switch(hit(rules, pos, fleet_size, fleet))
+	  {
+	  case -1:
+	    tab[n+1+((m+1)*(board.width+1))]='~';
+	      break;
+	  case 0:
+	    tab[n+1+((m+1)*(board.width+1))]='#';
+	      break;
+	  case 1:
+	    tab[n+1+((m+1)*(board.width+1))]='X';
+	      break;
+	  default:
+	    break;
+	    }
+	       
+	/*       struct ship ship = fleet[a];
         if ((ship.position.x == m) && (ship.position.y == n)){
           int d = ship_size(rules, ship);
           if (ship.orientation == 1){   // verif de l'orientation du bateau pour l'afficher
             for (int i = 0; i < d; i++)
-            {
-             if (ship.state[i] == 1)  // controle de l'état du bateau touché ou non
-             {
-             tab[n+ i +m*10] = 'X';}
-             else
-             {
-             tab[n+ i +m*10] = '#';}
-            }}
+	      {
+		if (ship.state[i] == 1)  // controle de l'état du bateau touché ou non
+		  {
+		    tab[n+1 + i +(m+ 1)*10] = 'X';}
+		else
+		  {
+		    tab[n+ i +m*10] = '#';}
+	      }}
           else{
             for (int i = 0; i < d; i++)
-            {
-            if (ship.state[i] == 1)  // controle de l'état du bateau touché ou non
-             {
-             tab[n+(m+i)*10] = 'X';}
-             else
-             {
-             tab[n+(m+i)*10] = '#';}
-            }
-          }        
-           }
-      }
-      printf("%c ",tab[n + m*10]);}   // affichage d'une partie du tableau qui correspond à 1 ligne.
-printf("\n");
+	      {
+		if (ship.state[i] == 1)  // controle de l'état du bateau touché ou non
+		  {
+		    tab[n+(m+i)*10] = 'X';}
+		else
+		  {
+		    tab[n+(m+i)*10] = '#';}
+	      }
+	      }*/        
+	}
+	}
+  }
+  for(int j = 0; j < b; ++j){
+    printf("%c ",tab[(j/(board.width))*(board.width) + j%(board.width)]);
+    if( j-2 > board.width){
+      if ((j+1)%(board.width+1)== 0){
+	printf("\n");}
+      
+    }
+    else
+      if (j == board.width)
+	  printf("\n");}
+    // affichage d'une partie du tableau qui correspond à 1 ligne.
+    
+  
 }
-}
+
 /**
  * Retourne la somme des `n` premiers éléments du tableau d'entier `array`.
  * Le tableau est supposé contenir au moins `n` éléments
@@ -176,12 +205,6 @@ return local;
  */
 int remaining_life(struct rules rules, struct ship ship) 
 {
-/*int a = ship_size(rules, ship);
-int b = a;
-while(b != 0){
-b = b - 1;    
-a = a - ship.state[b];
-}*/
 return ship_size(rules,ship) - sum(ship_size(rules,ship),ship.state); 
 }
 
@@ -398,8 +421,9 @@ for (int i = 0; i < fleet_size; i++){
     print_position(fleet[i].position);
     printf(" fleet\n");
     printf("%d b\n",b);
-  }
+  
   printf("\n\n");*/
+  }
 }
 return b;
 }
