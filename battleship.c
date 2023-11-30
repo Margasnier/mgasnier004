@@ -30,7 +30,7 @@ static const char* const ship_labels[] = {
  *
  */
 void print_grid(struct rules rules,
-		int fleet_size, const struct ship fleet[], struct dimension board)
+		int fleet_size, const struct ship fleet[], struct dimension board, int tab3[])
 {
   int b = (board.width+1) * (board.height+1);
   char tab[b];  // creation d'un tableau de vagues (~)
