@@ -5,17 +5,12 @@
 
 #include "battleship.h"
 
-/**struct ship *find_target(struct rules rules, struct position pos,
-        int fleet_size, struct ship fleet[])
-{
- 
-  
-  return 0;
-}
 
- * Le nom des bateaux sous forme de chaînes de caractères immutables.
+
+ /* Le nom des bateaux sous forme de chaînes de caractères immutables.
  * Les entrées du tableau coïncident avec les valeurs de l'`enum ship_kind`
  */
+
 static const char* const ship_labels[] = {
     "Destroyer", "Submarine", "Cruiser", "Battleship", "Carrier"
 };
@@ -35,6 +30,7 @@ void print_grid(struct rules rules,
   int b = (board.width+1) * (board.height+1);
   int tab[b];  // creation d'un tableau
   tab[0]=' ';
+   
   for (int i = 1; i < board.width+2; ++i)
     tab[i]= '0' + i - 1;
   for (int k = 1; k < board.height+2; ++k)
@@ -46,10 +42,10 @@ void print_grid(struct rules rules,
 	switch(hit(rules, pos, fleet_size, fleet))
 	  {
 	  case -1:
-	    if (tab3[n+(m*board.width)] == 1)
-	    tab[n+1+((m+1)*(board.width+1))]='o';
-	    else
-	      tab[n+1+((m+1)*(board.width+1))]=' ';
+	    if (tab3[n+(m*board.width)] == 1){
+	      tab[n+1+((m+1)*(board.width+1))]='o';}
+	    else{
+	      tab[n+1+((m+1)*(board.width+1))]=' ';}
 	    break;
 	  case 0:
 	    tab[n+1+((m+1)*(board.width+1))]='#';
@@ -62,7 +58,7 @@ void print_grid(struct rules rules,
 	  }
       }
     }
-  }
+}
   for(int j = 0; j < b; ++j){
     printf("%c ",tab[(j/(board.width))*(board.width) + j%(board.width)]);
     if( j-2 > board.width){
@@ -297,17 +293,17 @@ struct ship *find_target(struct rules rules, struct position pos,
 int hit(struct rules rules, struct position pos,
         int fleet_size, struct ship fleet[])
 { 
-   while (fleet_size > 0){
-        if( inside(pos, fleet[fleet_size - 1].position, 
-                        ship_dimension(rules, fleet[fleet_size - 1]))) {
-          if (fleet[fleet_size - 1].state[offset(pos,fleet[fleet_size - 1].position)]){
-            return 1;}
-          else 
-            return 0;
-        }
-        fleet_size = fleet_size - 1;
-    }   
-return -1;  
+  while (fleet_size > 0){
+    if( inside(pos, fleet[fleet_size - 1].position, 
+	       ship_dimension(rules, fleet[fleet_size - 1]))) {
+      if (fleet[fleet_size - 1].state[offset(pos,fleet[fleet_size - 1].position)]){
+	return 1;}
+      else 
+	return 0;
+    }
+    fleet_size = fleet_size - 1;
+  }
+  return -1;  
 }
 
 /**
@@ -380,30 +376,20 @@ else
  * RQ: réutiliser autant que possible les fonctions précédentes.
  */
 int ship_overlap(struct rules rules, struct ship ship,
-        int fleet_size, const struct ship fleet[])
+		 int fleet_size, const struct ship fleet[])
 {
-int b = -1;
-for (int i = 0; i < fleet_size; i++){
-  struct ship one = ship;
-  print_position(one.position);
-  for (int a = 0; a < ship_size(rules,ship); a++){
-    // for (int c = 
-    if (inside(one.position, fleet[i].position, ship_dimension(rules, fleet[i])) == 1){
-      return i;
-    }
-    /* printf("%d inside\n",inside(one.position, fleet[i].position, ship_dimension(rules, fleet[i])));
-    one.position.x = one.position.x + (1 < ship_dimension(rules, ship).width);
-    one.position.y = one.position.y + (1 < ship_dimension(rules, ship).height);
+  int b = -1;
+  for (int i = 0; i < fleet_size; i++){
+    struct ship one = ship;
     print_position(one.position);
-    printf(" one\n");
-    print_position(fleet[i].position);
-    printf(" fleet\n");
-    printf("%d b\n",b);
-  
-  printf("\n\n");*/
+    for (int a = 0; a < ship_size(rules,ship); a++){
+      // for (int c = 
+      if (inside(one.position, fleet[i].position, ship_dimension(rules, fleet[i])) == 1){
+	return i;
+      }
+    }
   }
-}
-return b;
+  return b;
 }
 
 /**

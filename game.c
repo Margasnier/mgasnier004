@@ -43,7 +43,7 @@ void state_fleet(struct rules rules,int fleet_size, struct ship fleet[])
   for(int i = 0; i < fleet_size; ++i)
     print_ship(rules, fleet[i]);
 }
-void print_message (int a,struct position pos)
+void print_feu (int a,struct position pos)
 {
   if (a==0){
     printf("Feu en ");
@@ -54,13 +54,16 @@ void print_message (int a,struct position pos)
 
 int game_ready(struct rules rules, struct dimension grid, int fleet_size,struct ship fleet[])
 {
-  int tab_game[grid.width*grid.height];
+  int tab_game[grid.width*grid.height] ;
+  for (int i = 0; i < grid.width*grid.height; i++) {
+    tab_game[i] = 0;
+    }
   int d = 0;
   int a = notfleet(fleet, fleet_size, rules);
   while (a > 0){
     struct position pos = {random_between(0, grid.width-1), random_between(0, grid.height-1)};
     int b = pos.x + (grid.width*pos.y);
-    while (tab_game[b] == 1){
+    while (tab_game[b] == 1){ // Vérification que la tir à cette position n'a jamais été faite
       if ( b > 0){
 	b = b - 1;}
       else
@@ -76,12 +79,12 @@ int game_ready(struct rules rules, struct dimension grid, int fleet_size,struct 
       target->state[n] = 1;
     }
     system ("clear");
-    print_message(0, pos);
-    print_grid(rules, fleet_size, fleet, grid,  tab_game);
-    state_fleet(basic_rules,fleet_size, fleet);
+    print_feu(0, pos);
+    print_grid(rules, fleet_size, fleet, grid, tab_game);//impression de la grille
+    state_fleet(basic_rules,fleet_size, fleet);//Vérification de l'état de la flotte pour affichage
     usleep(500000);
     d = d + 1;
-    a = notfleet(fleet, fleet_size, rules);
+    a = notfleet(fleet, fleet_size, rules);//Regarde si tous les bateaux sont coulés
  
   }
   return d;
@@ -96,7 +99,7 @@ struct ship ask_ship(struct dimension dim, int fleet_size)
   char kind[10];
   printf("Choisir le bateau a placer : DESTROYER => 0, SUBMARINE => 1, CRUISER => 2, BATTLESHIP => 3, CARRIER => 4 ?  \n");
   fgets(kind, 20, stdin);
- int ship_kind = atoi(kind);
+  int ship_kind = atoi(kind);
  // ship.kind = ship_kind;
   
 // demander une position au joueur
@@ -109,6 +112,7 @@ struct ship ask_ship(struct dimension dim, int fleet_size)
 
     //contraindre la position dans la grille
   struct position poscorrect = position ;
+ 
   constrain( &poscorrect,  dim);
 
     //correction de la position si besoin 
@@ -122,9 +126,12 @@ struct ship ask_ship(struct dimension dim, int fleet_size)
 // demander l'orientation du bateau
  char orient[10];
  printf("Choisir l'orientation du bateau : HORIZONTAL => 0 ou VERTICAL => 1 ? \n");
+  
  fgets(orient, 10, stdin);
+
  int orientation = atoi(orient);
  //ship.orientation = orientation;
+
  struct ship ship = {ship_kind, position, orientation};
  
 
@@ -141,38 +148,17 @@ int main(int argc, char *argv[])
   
   int seed = init_rand(-1, "SEED"); // initialise le code pseudo-aléatoire
   struct dimension grid_size = {10, 10};    // grille de 10 x 10
-  int fleet_size = 1;
-  struct ship fleet[fleet_size];
-  // int tab_game[grid_size.width*grid_size.height];
-  /*int c = notfleet(fleet, fleet_size,basic_rules);
-  while (c > 0){
-    struct position pos = {random_between(0, grid_size.width-1), random_between(0, grid_size.height-1)};
-    int b = pos.x + (grid_size.width*pos.y);
-    while (tab_game[b] == 1){
-      if ( b > 0){
-	b = b - 1;}
-      else
-	b = grid_size.width * grid_size.height;
-    } 
+  int tab_game[grid_size.width*grid_size.height];
+  for (int i = 0; i < grid_size.width*grid_size.height; i++) {
+    tab_game[i] = 0;
   }
-  */
-  
-  // print_grid(basic_rules, fleet_size, fleet, grid_size,  tab_game);
+  int fleet_size = 2;
+  struct ship fleet[fleet_size];
   for (int i = 0; i < fleet_size; ++i)
     {
       fleet[i] = ask_ship(grid_size, fleet_size);
-      //  print_grid(basic_rules, fleet_size, fleet, grid_size,  tab_game);
-
+      print_grid(basic_rules, fleet_size, fleet, grid_size, tab_game);
     }
-  /*struct ship fleet[i]=
-    {{DESTROYER,{4,5},HORIZONTAL},
-    {DESTROYER,{1,2},HORIZONTAL},
-    {DESTROYER,{7,8},HORIZONTAL}};*/
- 
-  //printf("seed %d\n", seed);
-  /*int fleet_size = 3; */
-  
-  
   printf("Appuyer sur la touche retour pour lancer le jeu:\n");
   int buffer[100];
   fgets(buffer, 100, stdin);
