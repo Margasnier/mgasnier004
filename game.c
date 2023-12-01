@@ -77,7 +77,7 @@ int game_ready(struct rules rules, struct dimension grid, int fleet_size,struct 
     }
     system ("clear");
     print_message(0, pos);
-    print_grid(rules, fleet_size, fleet, grid,  tab_game),
+    print_grid(rules, fleet_size, fleet, grid,  tab_game);
     state_fleet(basic_rules,fleet_size, fleet);
     usleep(500000);
     d = d + 1;
@@ -138,14 +138,31 @@ return ship;
 
 int main(int argc, char *argv[])
 {
+  
   int seed = init_rand(-1, "SEED"); // initialise le code pseudo-aléatoire
   struct dimension grid_size = {10, 10};    // grille de 10 x 10
   int fleet_size = 1;
   struct ship fleet[fleet_size];
+  // int tab_game[grid_size.width*grid_size.height];
+  /*int c = notfleet(fleet, fleet_size,basic_rules);
+  while (c > 0){
+    struct position pos = {random_between(0, grid_size.width-1), random_between(0, grid_size.height-1)};
+    int b = pos.x + (grid_size.width*pos.y);
+    while (tab_game[b] == 1){
+      if ( b > 0){
+	b = b - 1;}
+      else
+	b = grid_size.width * grid_size.height;
+    } 
+  }
+  */
+  
+  // print_grid(basic_rules, fleet_size, fleet, grid_size,  tab_game);
   for (int i = 0; i < fleet_size; ++i)
     {
       fleet[i] = ask_ship(grid_size, fleet_size);
-      state_fleet(basic_rules,fleet_size, fleet);
+      //  print_grid(basic_rules, fleet_size, fleet, grid_size,  tab_game);
+
     }
   /*struct ship fleet[i]=
     {{DESTROYER,{4,5},HORIZONTAL},

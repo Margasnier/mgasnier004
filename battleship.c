@@ -52,7 +52,7 @@ void print_grid(struct rules rules,
 	      tab[n+1+((m+1)*(board.width+1))]=' ';
 	    break;
 	  case 0:
-	    tab[n+1+((m+1)*(board.width+1))]=' ';
+	    tab[n+1+((m+1)*(board.width+1))]='#';
 	    break;
 	  case 1:
 	    tab[n+1+((m+1)*(board.width+1))]='X';
