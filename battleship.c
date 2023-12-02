@@ -57,7 +57,7 @@ void print_grid(struct rules rules,
 	  case 1:
 	    tab[n+1+((m+1)*(board.width+1))]='X';
 	    break;
-	  default:
+	  default: NULL;
 	    break;
 	  }
       }
@@ -385,7 +385,7 @@ int ship_overlap(struct rules rules, struct ship ship,
 int b = -1;
 for (int i = 0; i < fleet_size; i++){
   struct ship one = ship;
-  print_position(one.position);
+  //print_position(one.position);
   for (int a = 0; a < ship_size(rules,ship); a++){
     // for (int c = 
     if (inside(one.position, fleet[i].position, ship_dimension(rules, fleet[i])) == 1){

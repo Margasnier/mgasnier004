@@ -89,45 +89,42 @@ int game_ready(struct rules rules, struct dimension grid, int fleet_size,struct 
 
 struct ship ask_ship(struct dimension dim, int fleet_size)
 {
- printf("vous jouez avec : %d bateaux \n \n", fleet_size);
- // struct ship ship;
-
   //creer le type de bateau
   char kind[10];
   printf("Choisir le bateau a placer : DESTROYER => 0, SUBMARINE => 1, CRUISER => 2, BATTLESHIP => 3, CARRIER => 4 ?  \n");
   fgets(kind, 20, stdin);
+  while (kind[0] != '0' && kind[0] != '1' && kind[0] != '2' && kind[0] != '3' && kind[0] != '4')
+  {
+  printf("Choix de bateau incorrect: DESTROYER => 0, SUBMARINE => 1, CRUISER => 2, BATTLESHIP => 3, CARRIER => 4 ?  \n");
+  fgets(kind, 20, stdin);
+  }
  int ship_kind = atoi(kind);
- // ship.kind = ship_kind;
-  
 // demander une position au joueur
   char pos[10] ;
   printf("Entrez des coordonnées : \n");
   fgets(pos, 10, stdin);
-   
-    //transformer la position en (chiffre;chiffre)
+  //transformer la position en (chiffre;chiffre)
   struct position position = parse_position(pos);
-
-    //contraindre la position dans la grille
+    //contraindre la position dans la grille 
   struct position poscorrect = position ;
   constrain( &poscorrect,  dim);
-
-    //correction de la position si besoin 
-  if ( poscorrect.x != position.x || poscorrect.y != position.y)
+ //affichage de la correction au joueur si il y a eu 
+ if ( poscorrect.x != position.x || poscorrect.y != position.y)
     {
-      printf("Desolé, position non valide. La nouvelle position est : \%d,%\d ;) \n", poscorrect.x, poscorrect.y);
+      printf("Position non valide, position corrigé en : \n");
+      print_position(poscorrect);
+      printf("\n");
       position = poscorrect;
     }
- 
-
 // demander l'orientation du bateau
  char orient[10];
  printf("Choisir l'orientation du bateau : HORIZONTAL => 0 ou VERTICAL => 1 ? \n");
  fgets(orient, 10, stdin);
  int orientation = atoi(orient);
- //ship.orientation = orientation;
+ 
  struct ship ship = {ship_kind, position, orientation};
  
-
+ 
 return ship;
 
 
@@ -141,39 +138,27 @@ int main(int argc, char *argv[])
   
   int seed = init_rand(-1, "SEED"); // initialise le code pseudo-aléatoire
   struct dimension grid_size = {10, 10};    // grille de 10 x 10
-  int fleet_size = 1;
-  struct ship fleet[fleet_size];
-  // int tab_game[grid_size.width*grid_size.height];
-  /*int c = notfleet(fleet, fleet_size,basic_rules);
-  while (c > 0){
-    struct position pos = {random_between(0, grid_size.width-1), random_between(0, grid_size.height-1)};
-    int b = pos.x + (grid_size.width*pos.y);
-    while (tab_game[b] == 1){
-      if ( b > 0){
-	b = b - 1;}
-      else
-	b = grid_size.width * grid_size.height;
-    } 
-  }
-  */
-  
-  // print_grid(basic_rules, fleet_size, fleet, grid_size,  tab_game);
-  for (int i = 0; i < fleet_size; ++i)
-    {
-      fleet[i] = ask_ship(grid_size, fleet_size);
-      //  print_grid(basic_rules, fleet_size, fleet, grid_size,  tab_game);
+  char size[10];
+  printf("Combien de bateau voulez vous ? \n");
+  fgets(size, 10, stdin);
 
-    }
-  /*struct ship fleet[i]=
-    {{DESTROYER,{4,5},HORIZONTAL},
-    {DESTROYER,{1,2},HORIZONTAL},
-    {DESTROYER,{7,8},HORIZONTAL}};*/
- 
-  //printf("seed %d\n", seed);
-  /*int fleet_size = 3; */
+  int fleet_size = atoi(size);
+  printf("vous jouez avec : %d bateaux \n \n", fleet_size);
+  struct ship fleet[fleet_size];
   
-  
-  printf("Appuyer sur la touche retour pour lancer le jeu:\n");
+  for (int i = 0; i < fleet_size; ++i)
+  {
+    struct ship ship = ask_ship(grid_size, fleet_size);
+    fleet[i] = ship;
+    /*printf("%d \n",ship_overlap(basic_rules, ship, fleet_size, fleet));
+    if ((i > 0) && (ship_overlap(basic_rules, ship, fleet_size, fleet) >= 0))
+    {
+        printf("Votre bateau est en collision avec un autre, veuillez le replacer ou en choisir un autre. \n");
+        i = i -1;
+      }
+  }*/
+  }
+    printf("Appuyer sur la touche retour pour lancer le jeu:\n");
   int buffer[100];
   fgets(buffer, 100, stdin);
   int a = game_ready(basic_rules, grid_size, fleet_size, fleet);
@@ -182,3 +167,6 @@ int main(int argc, char *argv[])
   return 0;
 
 }
+
+
+/* utiliser overlap dans ask_ship + afficher les rules + afficher la grille */
